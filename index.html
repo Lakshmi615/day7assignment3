@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Dashboard</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .dashboard-container {
+            display: flex;
+            width: 90%;
+            max-width: 1200px;
+            height: 80vh;
+            max-height: 700px;
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(to bottom, #4CAF50, #8BC34A);
+            padding: 20px;
+            color: #fff;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 30px;
+            font-size: 1.8em;
+            font-weight: bold;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 15px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar-menu a {
+            display: block;
+            padding: 12px 15px;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            font-size: 1.1em;
+        }
+
+        .sidebar-menu a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
+        }
+
+        .sidebar-menu a.active {
+            background-color: rgba(255, 255, 255, 0.3);
+            font-weight: bold;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 30px;
+            background-color: #f9f9f9;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+
+        .main-content h1 {
+            color: #4CAF50;
+            margin-top: 0;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .card h3 {
+            color: #555;
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .card p {
+            color: #4CAF50;
+            font-size: 2.5em;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .search-bar {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-bar input[type="text"] {
+            flex-grow: 1;
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1em;
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .search-bar input[type="text"]:focus {
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+        }
+
+        .name-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            background-color: #fff;
+        }
+
+        .name-list li {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 1.1em;
+            color: #333;
+        }
+
+        .name-list li:last-child {
+            border-bottom: none;
+        }
+
+        .section-content-area {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-top: 20px;
+        }
+
+        .section-content-area h4 {
+            color: #4CAF50;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .section-content-area ul {
+            list-style: disc inside;
+            padding-left: 20px;
+        }
+
+        .section-content-area ul li {
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        .section-content-area .btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 15px;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+
+        .section-content-area .btn:hover {
+            background-color: #45a049;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .data-table th, .data-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+            color: #333;
+        }
+
+        .data-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                flex-direction: column;
+                height: auto;
+                max-height: none;
+                width: 95%;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 15px;
+                margin-bottom: 20px;
+                border-bottom-left-radius: 0;
+                border-bottom-right-radius: 0;
+            }
+
+            .sidebar h2 {
+                margin-bottom: 20px;
+            }
+
+            .sidebar-menu {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .sidebar-menu li {
+                margin: 5px;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+
+            .main-content h1 {
+                font-size: 1.8em;
+                margin-bottom: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .dashboard-container {
+                border-radius: 0;
+                box-shadow: none;
+                width: 100%;
+            }
+            .sidebar {
+                padding: 10px;
+            }
+            .sidebar h2 {
+                font-size: 1.5em;
+            }
+            .sidebar-menu a {
+                padding: 10px 12px;
+                font-size: 1em;
+            }
+            .main-content h1 {
+                font-size: 1.5em;
+            }
+            .card h3 {
+                font-size: 1.1em;
+            }
+            .card p {
+                font-size: 2em;
+            }
+            .search-bar input[type="text"] {
+                padding: 8px 12px;
+                font-size: 0.9em;
+            }
+            .name-list li {
+                padding: 10px 12px;
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <h2>School Dashboard</h2>
+            <ul class="sidebar-menu">
+                <li><a href="#" class="menu-item active" data-target="dashboard-overview">Dashboard</a></li>
+                <li><a href="#" class="menu-item" data-target="students-section">Students</a></li>
+                <li><a href="#" class="menu-item" data-target="teachers-section">Teachers</a></li>
+                <li><a href="#" class="menu-item" data-target="classes-section">Classes</a></li>
+                <li><a href="#" class="menu-item" data-target="exams-section">Exams</a></li>
+                <li><a href="#" class="menu-item" data-target="library-section">Library</a></li>
+                <li><a href="#" class="menu-item" data-target="settings-section">Settings</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <h1 id="welcome-heading">Welcome to the School Dashboard</h1>
+
+            <section id="dashboard-overview" class="content-section active">
+                <div class="dashboard-cards">
+                    <div class="card">
+                        <h3>Total Students</h3>
+                        <p>500</p>
+                    </div>
+                    <div class="card">
+                        <h3>Total Teachers</h3>
+                        <p>50</p>
+                    </div>
+                    <div class="card">
+                        <h3>Classes</h3>
+                        <p>20</p>
+                    </div>
+                    <div class="card">
+                        <h3>Upcoming Exams</h3>
+                        <p>5</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="students-section" class="content-section">
+                <h2>Students Management</h2>
+                <div class="search-bar">
+                    <input type="text" id="studentSearch" placeholder="Search students...">
+                </div>
+                <ul id="studentList" class="name-list">
+                </ul>
+            </section>
+
+            <section id="teachers-section" class="content-section">
+                <h2>Teachers Management</h2>
+                <div class="search-bar">
+                    <input type="text" id="teacherSearch" placeholder="Search teachers...">
+                </div>
+                <ul id="teacherList" class="name-list">
+                </ul>
+            </section>
+
+            <section id="classes-section" class="content-section">
+                <h2>Classes Management</h2>
+                <div class="section-content-area">
+                    <h4>Class Options:</h4>
+                    <ul>
+                        <li><a href="#" class="btn btn-small">Create New Class</a></li> <li><a href="#" class="btn btn-small">Assign Students to Class</a></li> <li><a href="#" class="btn btn-small">View All Class Lists</a></li> <li><a href="#" class="btn btn-small">Manage Class Schedules</a></li> </ul>
+
+                    <h4>Current Classes:</h4>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Class Name</th>
+                                <th>Teacher</th>
+                                <th>Students Enrolled</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Grade 10 - A</td>
+                                <td>Mr. John Doe</td>
+                                <td>35</td>
+                                <td><a href="#">View</a> | <a href="#">Edit</a></td>
+                            </tr>
+                            <tr>
+                                <td>Grade 10 - B</td>
+                                <td>Ms. Jane Smith</td>
+                                <td>32</td>
+                                <td><a href="#">View</a> | <a href="#">Edit</a></td>
+                            </tr>
+                            <tr>
+                                <td>Grade 9 - Science</td>
+                                <td>Dr. Alice Wonderland</td>
+                                <td>28</td>
+                                <td><a href="#">View</a> | <a href="#">Edit</a></td>
+                            </tr>
+                            </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="exams-section" class="content-section">
+                <h2>Exams Schedule</h2>
+                <div class="section-content-area">
+                    <h4>Exam Management:</h4>
+                    <ul>
+                        <li><a href="#" class="btn btn-small">Create New Exam</a></li> <li><a href="#" class="btn btn-small">Schedule Exams</a></li> <li><a href="#" class="btn btn-small">Enter Exam Results</a></li> </ul>
+
+                    <h4>Upcoming Exams:</h4>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Exam Name</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Class</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Math Mid-Term</td>
+                                <td>2025-07-15</td>
+                                <td>10:00 AM</td>
+                                <td>Grade 10 - A</td>
+                            </tr>
+                            <tr>
+                                <td>Science Final</td>
+                                <td>2025-07-20</td>
+                                <td>02:00 PM</td>
+                                <td>Grade 9 - Science</td>
+                            </tr>
+                            </tbody>
+                    </table>
+
+                    <h4>Past Results Summary:</h4>
+                    <p>A summary of past exam results and analytical reports would be displayed here.</p>
+                    <a href="#" class="btn">View Detailed Results</a>
+                </div>
+            </section>
+
+            <section id="library-section" class="content-section">
+                <h2>Library Resources</h2>
+                <div class="section-content-area">
+                    <h4>Library Operations:</h4>
+                    <ul>
+                        <li><a href="#" class="btn btn-small">Add New Book</a></li> <li><a href="#" class="btn btn-small">Issue/Return Book</a></li> <li><a href="#" class="btn btn-small">Manage Student Access</a></li> </ul>
+
+                    <h4>Book Inventory:</h4>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <th>Available</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>The Great Gatsby</td>
+                                <td>F. Scott Fitzgerald</td>
+                                <td>5</td>
+                                <td>8</td>
+                            </tr>
+                            <tr>
+                                <td>To Kill a Mockingbird</td>
+                                <td>Harper Lee</td>
+                                <td>3</td>
+                                <td>5</td>
+                            </tr>
+                            </tbody>
+                    </table>
+
+                    <h4>Borrowed Books:</h4>
+                    <p>List of books currently borrowed by students, including due dates.</p>
+                    <a href="#" class="btn">View All Borrowed Books</a>
+
+                    <h4>Student Access Logs:</h4>
+                    <p>Records of students accessing library resources and their activity.</p>
+                </div>
+            </section>
+
+            <section id="settings-section" class="content-section">
+                <h2>Dashboard Settings</h2>
+                <p>Configuration options for the dashboard will go here.</p>
+                <p>Example: User profile, notifications, theme settings, etc.</p>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        const menuItems = document.querySelectorAll('.menu-item');
+        const contentSections = document.querySelectorAll('.content-section');
+        const welcomeHeading = document.getElementById('welcome-heading');
+
+        const studentSearchInput = document.getElementById('studentSearch');
+        const studentListUl = document.getElementById('studentList');
+        const teacherSearchInput = document.getElementById('teacherSearch');
+        const teacherListUl = document.getElementById('teacherList');
+
+        const firstNames = ['Alice', 'Bob', 'Charlie', 'David', 'Eve', 'Frank', 'Grace', 'Heidi', 'Ivan', 'Judy', 'Kelly', 'Liam', 'Mia', 'Noah', 'Olivia', 'Peter', 'Quinn', 'Rachel', 'Sam', 'Tina'];
+        const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez', 'Hernandez', 'Lopez', 'Gonzales', 'Wilson', 'Anderson', 'Thomas', 'Jackson', 'White', 'Harris', 'Martin'];
+
+        function generateRandomName() {
+            const randomFirstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+            const randomLastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+            return `${randomFirstName} ${randomLastName}`;
+        }
+
+        function populateNameList(listElement, count, type) {
+            listElement.innerHTML = '';
+            for (let i = 0; i < count; i++) {
+                const li = document.createElement('li');
+                li.textContent = generateRandomName();
+                listElement.appendChild(li);
+            }
+        }
+
+        function filterList(searchInput, listElement) {
+            const filter = searchInput.value.toLowerCase();
+            const listItems = listElement.getElementsByTagName('li');
+            for (let i = 0; i < listItems.length; i++) {
+                const item = listItems[i];
+                const textValue = item.textContent || item.innerText;
+                if (textValue.toLowerCase().indexOf(filter) > -1) {
+                    item.style.display = "";
+                } else {
+                    item.style.display = "none";
+                }
+            }
+        }
+
+        function showContent(targetId) {
+            menuItems.forEach(item => {
+                item.classList.remove('active');
+            });
+            contentSections.forEach(section => {
+                section.classList.remove('active');
+            });
+            const activeMenuItem = document.querySelector(`.menu-item[data-target="${targetId}"]`);
+            if (activeMenuItem) {
+                activeMenuItem.classList.add('active');
+            }
+            const targetSection = document.getElementById(targetId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+            if (targetId === 'dashboard-overview') {
+                welcomeHeading.textContent = 'Welcome to the School Dashboard';
+            } else {
+                const menuText = activeMenuItem ? activeMenuItem.textContent : '';
+                welcomeHeading.textContent = `${menuText} Overview`;
+            }
+        }
+
+        menuItems.forEach(item => {
+            item.addEventListener('click', (event) => {
+                event.preventDefault();
+                const targetId = item.dataset.target;
+                showContent(targetId);
+            });
+        });
+
+        if (studentSearchInput) {
+            studentSearchInput.addEventListener('input', () => {
+                filterList(studentSearchInput, studentListUl);
+            });
+        }
+        if (teacherSearchInput) {
+            teacherSearchInput.addEventListener('input', () => {
+                filterList(teacherSearchInput, teacherListUl);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            populateNameList(studentListUl, 100, 'student');
+            populateNameList(teacherListUl, 30, 'teacher');
+            showContent('dashboard-overview');
+        });
+    </script>
+</body>
+</html>
